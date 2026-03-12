@@ -15,6 +15,9 @@ make install
 # Start services with Docker
 docker compose up -d
 
+# Start aplication
+docker compose up --build
+
 # Run tests
 make tests
 

@@ -29,6 +29,17 @@ export FLASK_APP=run.py
 flask run
 ```
 
+# Ejecutar proyecto con docker compose 
+# Start aplication
+```sh
+cd api_rest/ 
+docker compose exec www alembic revision --autogenerate -m "create users table"
+docker compose exec www alembic upgrade head
+docker compose up --build
+```
+
+
+
 # Ingressar a la base de datos posgrest
 
 ```sh
@@ -38,3 +49,8 @@ flask run
 # Generar token
 
 ![alt text](image_token.png)
+
+
+# otras instrucciones
+
+<a href="/api_rest/README.md"> README </a>
