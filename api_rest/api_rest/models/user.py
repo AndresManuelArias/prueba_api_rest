@@ -1,12 +1,15 @@
 from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm import Mapped, mapped_column
-
-from api_rest.models.base import Base
+from api_rest.conf.db import Base
 
 
 class User(Base):
+
     __tablename__ = "users"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-    name: Mapped[str] = mapped_column(String(100), nullable=False)
-    email: Mapped[str] = mapped_column(String(255), unique=True, index=True)
+    id = Column(Integer, primary_key=True, index=True)
+
+    name = Column(String(50), nullable=False)
+
+    email = Column(String(100), unique=True, nullable=False, index=True)
+
+    password = Column(String(200), nullable=False)
