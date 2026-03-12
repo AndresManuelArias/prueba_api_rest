@@ -23,3 +23,22 @@ make chores
 ```
 
 See the [developer documentation](./docs/dev/README.md) for complete guides and reference.
+
+### run aplication local
+```bash
+
+uvicorn api_rest.www:app --reload
+
+```
+
+### Migration
+create archive
+```bash
+
+docker compose exec www alembic revision --autogenerate -m "create users table"
+```
+create table
+```bash
+
+docker compose exec www alembic upgrade head
+```
