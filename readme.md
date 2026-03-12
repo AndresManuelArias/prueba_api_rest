@@ -28,3 +28,9 @@ pip freeze > requirements.txt
 export FLASK_APP=run.py
 flask run
 ```
+
+# ingressar a la base de datos posgrest
+
+```sh
+ docker compose exec db psql -U main -d main
+```
