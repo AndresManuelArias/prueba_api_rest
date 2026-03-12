@@ -1,11 +1,17 @@
 import os
 
+
 from fastapi import FastAPI, Depends
+from fastapi import HTTPException
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 from sqlalchemy.orm import Session
 from api_rest.conf.db import SessionLocal
+from api_rest.conf.security import create_access_token
+from api_rest.conf.security import verify_token
+
+
 from api_rest.models.user import User
 from api_rest.schemas.user import UserCreate, UserResponse
 
@@ -33,9 +39,13 @@ async def hello_world():
 
 
 
-@app.post("/users", response_model=UserResponse)
-def create_user(user: UserCreate, db: Session = Depends(get_db)):
-    
+
+
+@app.post("/users")
+def create_user(    user: UserCreate,
+    db: Session = Depends(get_db),
+    token=Depends(verify_token)):
+
     new_user = User(
         name=user.name,
         email=user.email
@@ -46,3 +56,20 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     db.refresh(new_user)
 
     return new_user
+
+
+@app.post("/token")
+def login(username: str, password: str):
+
+    # autenticación simple (puedes luego validar en DB)
+    if username != "admin" or password != "admin":
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+
+    token = create_access_token(
+        data={"sub": username}
+    )
+
+    return {
+        "access_token": token,
+        "token_type": "bearer"
+    }

@@ -10,12 +10,12 @@ python3 -m venv venv
 source venv/bin/activate
 ```
 
-# instalar dependencia 
+# Instalar dependencia 
 ```sh
 pip install -r requirements.txt
 ```
 
-# generar archivo requeriment 
+# Generar archivo requeriment 
 
 ```sh
 
@@ -23,14 +23,18 @@ pip freeze > requirements.txt
 ```
 
 
-# ejecutar proyecto
+# Ejecutar proyecto
 ```sh
 export FLASK_APP=run.py
 flask run
 ```
 
-# ingressar a la base de datos posgrest
+# Ingressar a la base de datos posgrest
 
 ```sh
  docker compose exec db psql -U main -d main
 ```
+
+# Generar token
+
+![alt text](image_token.png)

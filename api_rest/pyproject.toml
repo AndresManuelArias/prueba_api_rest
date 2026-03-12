@@ -34,6 +34,8 @@ dependencies = [
   "pydantic[email]~=2.0",
   "pydantic-settings",
   "uvicorn[standard]",
+  "python-jose[cryptography]>=3.5.0",
+  "passlib[bcrypt]>=1.7.4",
 ]
 
 [dependency-groups]
