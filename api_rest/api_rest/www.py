@@ -90,3 +90,29 @@ def create_user(
     return new_user
 
 
+
+@app.put("/users/{user_id}", response_model=UserResponse)
+def update_user(
+    user_id: int,
+    user: UserCreate,
+    db: Session = Depends(get_db),
+    token=Depends(verify_token)
+):
+
+    db_user = db.query(User).filter(User.id == user_id).first()
+
+    if not db_user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+
+    # actualizar campos
+    db_user.name = user.name
+    db_user.email = user.email
+    db_user.password = user.password
+
+    db.commit()
+    db.refresh(db_user)
+
+    return db_user
