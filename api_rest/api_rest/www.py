@@ -10,6 +10,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select
 from api_rest.conf.db import SessionLocal
 from api_rest.conf.db import Base, engine
+from typing import List
 
 from api_rest.conf.security import create_access_token
 from api_rest.conf.security import verify_token
@@ -47,7 +48,7 @@ async def hello_world():
 
 @app.post("/token")
 def login(username: str, password: str):
-    # autenticación simple (puedes luego validar en DB)
+
     if username != "admin" or password != "admin":
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
@@ -107,7 +108,7 @@ def update_user(
             detail="User not found"
         )
 
-    # actualizar campos
+
     db_user.name = user.name
     db_user.email = user.email
     db_user.password = user.password
@@ -116,3 +117,53 @@ def update_user(
     db.refresh(db_user)
 
     return db_user
+
+
+@app.get("/users/{user_id}", response_model=UserResponse)
+def get_user(
+    user_id: int,
+    db: Session = Depends(get_db),
+    token=Depends(verify_token)
+):
+
+    db_user = db.query(User).filter(User.id == user_id).first()
+
+    if not db_user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+
+    return db_user
+
+
+@app.get("/users", response_model=List[UserResponse])
+def get_users(
+    db: Session = Depends(get_db),
+    token=Depends(verify_token)
+):
+
+    users = db.query(User).all()
+
+    return users
+
+
+@app.delete("/users/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_user(
+    user_id: int,
+    db: Session = Depends(get_db),
+    token=Depends(verify_token)
+):
+
+    db_user = db.query(User).filter(User.id == user_id).first()
+
+    if not db_user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+
+    db.delete(db_user)
+    db.commit()
+
+    return
