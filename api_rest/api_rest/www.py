@@ -1,7 +1,7 @@
 import os
 
 
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends,Query
 from fastapi import HTTPException, status
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
@@ -139,12 +139,18 @@ def get_user(
 
 @app.get("/users", response_model=List[UserResponse])
 def get_users(
+    skip: int = Query(0, ge=0, description="Número de registros a saltar"),
+    limit: int = Query(10, ge=1, le=100, description="Número máximo de registros a devolver"),
     db: Session = Depends(get_db),
     token=Depends(verify_token)
 ):
+    """
+    Obtiene todos los usuarios con paginación.
+    - `skip`: cuántos registros saltar (offset)
+    - `limit`: cuántos registros devolver como máximo
+    """
 
-    users = db.query(User).all()
-
+    users = db.query(User).offset(skip).limit(limit).all()
     return users
 
 
