@@ -3,7 +3,7 @@ revision = 3
 requires-python = ">=3.10"
 
 [options]
-exclude-newer = "2026-03-05T15:26:22.328119423Z"
+exclude-newer = "2026-03-05T17:23:22.510772316Z"
 exclude-newer-span = "P1W"
 
 [[package]]
@@ -70,6 +70,7 @@ dependencies = [
     { name = "alembic" },
     { name = "asyncpg" },
     { name = "fastapi" },
+    { name = "httpx" },
     { name = "passlib", extra = ["bcrypt"] },
     { name = "psycopg2-binary" },
     { name = "pydantic", extra = ["email"] },
@@ -104,6 +105,7 @@ requires-dist = [
     { name = "alembic" },
     { name = "asyncpg" },
     { name = "fastapi" },
+    { name = "httpx", specifier = ">=0.28.1" },
     { name = "passlib", extras = ["bcrypt"], specifier = ">=1.7.4" },
     { name = "psycopg2-binary" },
     { name = "pydantic", extras = ["email"], specifier = "~=2.0" },

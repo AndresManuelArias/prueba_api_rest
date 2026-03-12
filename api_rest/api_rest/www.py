@@ -6,6 +6,13 @@ from fastapi import HTTPException, status
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
+from fastapi import APIRouter, HTTPException
+import httpx
+
+
+
+from sqlalchemy import or_
+
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 from api_rest.conf.db import SessionLocal
@@ -137,10 +144,7 @@ def get_user(
     return db_user
 
 
-from fastapi import FastAPI, Depends, Query
-from sqlalchemy.orm import Session
-from typing import List
-from sqlalchemy import or_
+
 
 @app.get("/users", response_model=List[UserResponse])
 def get_users(
@@ -177,3 +181,28 @@ def delete_user(
     db.commit()
 
     return
+
+
+
+
+
+router = APIRouter(
+    prefix="/external",
+    tags=["External API"]
+)
+
+EXTERNAL_API_URL = "https://jsonplaceholder.typicode.com/users"
+
+@app.get("/users-external", response_model=List[dict])
+async def get_external_users():
+
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.get(EXTERNAL_API_URL, timeout=10.0)
+            response.raise_for_status()
+        except httpx.RequestError as e:
+            raise HTTPException(status_code=503, detail=f"Error de conexión: {str(e)}")
+        except httpx.HTTPStatusError as e:
+            raise HTTPException(status_code=e.response.status_code, detail=f"Error en la API externa: {e.response.text}")
+
+    return response.json()
